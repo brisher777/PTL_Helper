@@ -15,12 +15,12 @@ import java.util.List;
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
-public class ApplicationTest extends ActivityUnitTestCase<member_display> {
-
-    public ApplicationTest(Class<member_display> activityClass) {
+public class MembersTests extends ActivityUnitTestCase<member_display> {
+//TODO: break up the tests for charts and members into two separate classes, starting a test suite
+    public MembersTests(Class<member_display> activityClass) {
         super(activityClass);
     }
-    public ApplicationTest() {
+    public MembersTests() {
         super(member_display.class);
     }
 
@@ -127,34 +127,4 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         assertEquals(new_ben.get_gender(), "Wookie");
     }
 
-    public void test_charts_database_add_metric() {
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
-        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
-        db_handler.addScoreMetric(metric);
-        assertEquals(db_handler.getMetricCount(), 1);
-    }
-
-    public void test_charts_database_get_metric() {
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
-        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
-        db_handler.addScoreMetric(metric);
-        ScoreMetric new_metric = db_handler.getScoreMetric(metric.get_id());
-        assertEquals(metric.get_act_high(), new_metric.get_act_high());
-        assertEquals(metric.get_points(), new_metric.get_points());
-    }
-
-    public void test_charts_database_update_metric() {
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
-        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
-        db_handler.addScoreMetric(metric);
-        assertEquals(metric.get_gender(), "Male");
-        metric.set_gender("Female");
-        assertEquals(metric.get_gender(), "Female");
-        db_handler.updateScoreMetric(metric);
-        ScoreMetric new_metric = db_handler.getScoreMetric(metric.get_id());
-        assertEquals(new_metric.get_gender(), "Female");
-
-
-
-    }
 }
