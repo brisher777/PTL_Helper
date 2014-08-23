@@ -90,6 +90,7 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    //TODO: fix what I've written so far to take advantage of auto increment
     public void addMember(Member member) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -185,12 +186,12 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(MKEY_PROFILE_DATE, member.get_profile_date());
         values.put(MKEY_PROFILE_DESCRIPTION, member.get_profile_description());
 
-        return db.update(TABLE_MEMBERS, values, MKEY_ID + " = ?", new String[] {String.valueOf(member.get_id())});
+        return db.update(TABLE_MEMBERS, values, MKEY_ID + "=?", new String[] {String.valueOf(member.get_id())});
     }
 
     public void deleteMember(Member member) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_MEMBERS, MKEY_ID + " = ?", new String[]{String.valueOf(member.get_id())});
+        db.delete(TABLE_MEMBERS, MKEY_ID + "=?", new String[]{String.valueOf(member.get_id())});
         db.close();
     }
 
@@ -236,6 +237,23 @@ public class DBHandler extends SQLiteOpenHelper {
                     Integer.parseInt(cursor.getString(6)),Integer.parseInt(cursor.getString(7)));
         }
         return metric;
-
     }
+
+    public int updateScoreMetric(ScoreMetric metric) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(SKEY_ID, metric.get_id());
+        values.put(SKEY_GENDER, metric.get_gender());
+        values.put(SKEY_AGE_LOWER_LIMIT, metric.get_age_low());
+        values.put(SKEY_AGE_UPPER_LIMIT, metric.get_age_high());
+        values.put(SKEY_ACTION, metric.get_action());
+        values.put(SKEY_ACTION_LOWER_LIMIT, metric.get_act_low());
+        values.put(SKEY_ACTION_UPPER_LIMIT, metric.get_act_high());
+        values.put(SKEY_POINTS, metric.get_points());
+
+        return db.update(TABLE_CHARTS, values, SKEY_ID + "=?", new String[] {String.valueOf(metric.get_id())});
+    }
+
+
 }

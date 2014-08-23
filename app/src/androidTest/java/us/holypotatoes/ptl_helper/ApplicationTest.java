@@ -45,18 +45,18 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
     public void test_member_database_add_member() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
 
-        Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
+        Member ben = new Member(0,"Ben", "Male", "09-17-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(ben);
     }
 
     public void test_member_database_count_function() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
-        Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
+        Member ben = new Member(0,"Ben", "Male", "09-17-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(ben);
         assertEquals(db_handler.getMembersCount(), 1);
-        Member sarah = new Member(1,"Sarah", "Female", "04-21-1984", "06-31-2014", "12-31-2014",
+        Member sarah = new Member(1,"Sarah", "Female", "04-11-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(sarah);
         assertEquals(db_handler.getMembersCount(), 2);
@@ -64,17 +64,17 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
 
     public void test_member_database_remove_member_and_retest_count() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
-        Member sarah = new Member(1,"Sarah", "Female", "04-21-1984", "06-31-2014", "12-31-2014",
+        Member sarah = new Member(1,"Sarah", "Female", "04-11-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(sarah);
         assertEquals(db_handler.getMembersCount(), 1);
         db_handler.deleteMember(sarah);
         assertEquals(db_handler.getMembersCount(), 0);
         db_handler.addMember(sarah);
-        Member sarahs = new Member(2,"Sarah", "Female", "04-21-1984", "06-31-2014", "12-31-2014",
+        Member sarahs = new Member(2,"Sarah", "Female", "04-11-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(sarahs);
-        Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
+        Member ben = new Member(0,"Ben", "Male", "09-17-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(ben);
         assertEquals(db_handler.getMembersCount(), 3);
@@ -88,13 +88,13 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
 
     public void test_member_database_get_all_members_function() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
-        Member sarah = new Member(1,"Sarah", "Female", "04-21-1984", "06-31-2014", "12-31-2014",
+        Member sarah = new Member(1,"Sarah", "Female", "04-11-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(sarah);
-        Member sarahs = new Member(2,"Sarah", "Female", "04-21-1984", "06-31-2014", "12-31-2014",
+        Member sarahs = new Member(2,"Sarah", "Female", "04-11-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(sarahs);
-        Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
+        Member ben = new Member(0,"Ben", "Male", "09-17-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(ben);
         List<Member> memberList = db_handler.getAllMembers();
@@ -106,7 +106,7 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
 
     public void test_member_database_get_member_function() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
-        Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
+        Member ben = new Member("Ben", "Male", "09-17-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(ben);
         Member new_ben = db_handler.getMember(ben.get_id());
@@ -116,14 +116,14 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
 
     public void test_member_database_update_member() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
-        Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
+        Member ben = new Member(0,"Ben", "Male", "09-17-1986", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(ben);
         assertEquals(ben.get_gender(), "Male");
         ben.set_gender("Wookie");
         assertEquals(ben.get_gender(), "Wookie");
         db_handler.updateMember(ben);
-        Member new_ben = db_handler.getMember(0);
+        Member new_ben = db_handler.getMember(ben.get_id());
         assertEquals(new_ben.get_gender(), "Wookie");
     }
 
@@ -141,5 +141,20 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         ScoreMetric new_metric = db_handler.getScoreMetric(metric.get_id());
         assertEquals(metric.get_act_high(), new_metric.get_act_high());
         assertEquals(metric.get_points(), new_metric.get_points());
+    }
+
+    public void test_charts_database_update_metric() {
+        DBHandler db_handler = DBHandler.getInstance(main_activity);
+        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
+        db_handler.addScoreMetric(metric);
+        assertEquals(metric.get_gender(), "Male");
+        metric.set_gender("Female");
+        assertEquals(metric.get_gender(), "Female");
+        db_handler.updateScoreMetric(metric);
+        ScoreMetric new_metric = db_handler.getScoreMetric(metric.get_id());
+        assertEquals(new_metric.get_gender(), "Female");
+
+
+
     }
 }

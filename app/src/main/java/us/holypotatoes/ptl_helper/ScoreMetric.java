@@ -7,6 +7,19 @@ public class ScoreMetric {
     int _id, _age_low, _age_high, _act_low, _act_high, _points;
     String _gender, _action;
 
+    public ScoreMetric(){}
+
+    public ScoreMetric(String _gender, int _age_low, int _age_high, String _action,int _act_low,
+                       int _act_high, int _points) {
+        this._age_low = _age_low;
+        this._age_high = _age_high;
+        this._act_low = _act_low;
+        this._act_high = _act_high;
+        this._points = _points;
+        this._gender = _gender;
+        this._action = _action;
+    }
+
     public ScoreMetric(int _id, String _gender, int _age_low, int _age_high, String _action,
                        int _act_low, int _act_high, int _points) {
         this._id = _id;
