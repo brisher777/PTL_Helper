@@ -26,7 +26,6 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
 
     static Activity main_activity;
 
-    // This isn't working at the moment...
     public void setUp() throws Exception {
         super.setUp();
         Intent mLaunchIntent = new Intent(getInstrumentation().getTargetContext(),
@@ -43,7 +42,7 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         db_handler.onUpgrade(db, 1,1);
     }
 
-    public void test_database_add_member() {
+    public void test_member_database_add_member() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
 
         Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
@@ -51,7 +50,7 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         db_handler.addMember(ben);
     }
 
-    public void test_database_count_function() {
+    public void test_member_database_count_function() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
         Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
@@ -63,7 +62,7 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         assertEquals(db_handler.getMembersCount(), 2);
     }
 
-    public void test_database_remove_member_and_retest_count() {
+    public void test_member_database_remove_member_and_retest_count() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
         Member sarah = new Member(1,"Sarah", "Female", "04-21-1984", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
@@ -87,7 +86,7 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         assertEquals(db_handler.getMembersCount(), 0);
     }
 
-    public void test_database_get_all_members_function() {
+    public void test_member_database_get_all_members_function() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
         Member sarah = new Member(1,"Sarah", "Female", "04-21-1984", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
@@ -105,18 +104,17 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         assertEquals((memberList instanceof List), true);
     }
 
-    public void test_database_get_member_function() {
+    public void test_member_database_get_member_function() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
         Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
         db_handler.addMember(ben);
-        Member new_ben = db_handler.getMember(0);
+        Member new_ben = db_handler.getMember(ben.get_id());
         assertEquals(ben.get_birthday(), new_ben.get_birthday());
         assertEquals(ben.get_next_test_date(), ben.get_next_test_date());
-
     }
 
-    public void test_database_update_member() {
+    public void test_member_database_update_member() {
         DBHandler db_handler = DBHandler.getInstance(main_activity);
         Member ben = new Member(0,"Ben", "Male", "12-20-1982", "06-31-2014", "12-31-2014",
                 60, 60, 28, "9:30", 0, "", "");
@@ -127,5 +125,21 @@ public class ApplicationTest extends ActivityUnitTestCase<member_display> {
         db_handler.updateMember(ben);
         Member new_ben = db_handler.getMember(0);
         assertEquals(new_ben.get_gender(), "Wookie");
+    }
+
+    public void test_charts_database_add_metric() {
+        DBHandler db_handler = DBHandler.getInstance(main_activity);
+        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
+        db_handler.addScoreMetric(metric);
+        assertEquals(db_handler.getMetricCount(), 1);
+    }
+
+    public void test_charts_database_get_metric() {
+        DBHandler db_handler = DBHandler.getInstance(main_activity);
+        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
+        db_handler.addScoreMetric(metric);
+        ScoreMetric new_metric = db_handler.getScoreMetric(metric.get_id());
+        assertEquals(metric.get_act_high(), new_metric.get_act_high());
+        assertEquals(metric.get_points(), new_metric.get_points());
     }
 }

@@ -1,10 +1,5 @@
 package us.holypotatoes.ptl_helper;
 
-import java.util.Date;
-
-/**
- * For the PT Score DB -> for each entry, put an upper and lower time limit, then use the where clause to pull the one we want
- */
 public class Member {
     int _id, _push_ups, _sit_ups, _waist_size, _on_profile;
     String _name, _run_time, _profile_description, _gender, _profile_date, _last_test_date,

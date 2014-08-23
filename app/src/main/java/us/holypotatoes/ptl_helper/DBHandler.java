@@ -39,6 +39,16 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String MKEY_PROFILE_DATE = "profile_date";
     private static final String MKEY_PROFILE_DESCRIPTION = "profile_description";
 
+    //columns for charts
+    private static final String SKEY_ID = "id";
+    private static final String SKEY_GENDER = "gender";
+    private static final String SKEY_AGE_LOWER_LIMIT = "age_low";
+    private static final String SKEY_AGE_UPPER_LIMIT = "age_high";
+    private static final String SKEY_ACTION= "action";
+    private static final String SKEY_ACTION_LOWER_LIMIT = "act_low";
+    private static final String SKEY_ACTION_UPPER_LIMIT = "act_high";
+    private static final String SKEY_POINTS = "points";
+
     public static DBHandler getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new DBHandler(context.getApplicationContext());
@@ -58,14 +68,23 @@ public class DBHandler extends SQLiteOpenHelper {
                 " TEXT," + MKEY_PUSH_UPS + " INTEGER," + MKEY_SIT_UPS + " INTEGER," + MKEY_WAIST_SIZE +
                 " INTEGER," + MKEY_RUN_TIME + " TEXT," + MKEY_ON_PROFILE + " INTEGER," +
                 MKEY_PROFILE_DATE + " TEXT," + MKEY_PROFILE_DESCRIPTION + " TEXT)";
-        Log.d("DB CREATE", CREATE_MEMBERS_TABLE);
+        Log.d("DB CREATE MEMBERS TABLE", CREATE_MEMBERS_TABLE);
+
+        String CREATE_CHARTS_TABLE = "CREATE TABLE " + TABLE_CHARTS + "(" + SKEY_ID +
+                " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + SKEY_GENDER + " TEXT," +
+                SKEY_AGE_LOWER_LIMIT + " INTEGER," + SKEY_AGE_UPPER_LIMIT + " INTEGER," +
+                SKEY_ACTION + " TEXT," + SKEY_ACTION_LOWER_LIMIT + " INTEGER," +
+                SKEY_ACTION_UPPER_LIMIT + " INTEGER," + SKEY_POINTS + " INTEGER)";
+        Log.d("DB CREATE CHARTS TABLE", CREATE_CHARTS_TABLE);
         db.execSQL(CREATE_MEMBERS_TABLE);
+        db.execSQL(CREATE_CHARTS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
+        // Drop older tables if present
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHARTS);
 
         // Create tables again
         onCreate(db);
@@ -175,5 +194,48 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    /*
+     *  END MEMBER FUNCTIONS AND BEGIN CHARTS FUNCTIONS
+     */
+    //TODO: add functions to act on the charts table
+    public void addScoreMetric(ScoreMetric metric) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(SKEY_ID, metric.get_id());
+        values.put(SKEY_GENDER, metric.get_gender());
+        values.put(SKEY_AGE_LOWER_LIMIT, metric.get_age_low());
+        values.put(SKEY_AGE_UPPER_LIMIT, metric.get_age_high());
+        values.put(SKEY_ACTION, metric.get_action());
+        values.put(SKEY_ACTION_LOWER_LIMIT, metric.get_act_low());
+        values.put(SKEY_ACTION_UPPER_LIMIT, metric.get_act_high());
+        values.put(SKEY_POINTS, metric.get_points());
+
+        db.insert(TABLE_CHARTS, null, values);
+        db.close();
+    }
+    public int getMetricCount() {
+        String countQuery = "SELECT * FROM " + TABLE_CHARTS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        return cursor.getCount();
+    }
+
+    public ScoreMetric getScoreMetric(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ScoreMetric metric = null;
+        Cursor cursor = db.query(TABLE_CHARTS, null, SKEY_ID + "=?", new String[] {String.valueOf(id)},
+                null, null, null, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            metric = new ScoreMetric(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
+                    Integer.parseInt(cursor.getString(2)), Integer.parseInt(cursor.getString(3)),
+                    cursor.getString(4), Integer.parseInt(cursor.getString(5)),
+                    Integer.parseInt(cursor.getString(6)),Integer.parseInt(cursor.getString(7)));
+        }
+        return metric;
+
+    }
 }
