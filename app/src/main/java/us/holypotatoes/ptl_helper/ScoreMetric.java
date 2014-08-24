@@ -4,7 +4,8 @@ package us.holypotatoes.ptl_helper;
  * Created by ben on 8/22/14.
  */
 public class ScoreMetric {
-    int _id, _age_low, _age_high, _act_low, _act_high, _points;
+    int _age_low, _age_high, _act_low, _act_high, _points;
+    long _id;
     String _gender, _action;
 
     public ScoreMetric(){}
@@ -20,7 +21,7 @@ public class ScoreMetric {
         this._action = _action;
     }
 
-    public ScoreMetric(int _id, String _gender, int _age_low, int _age_high, String _action,
+    public ScoreMetric(long _id, String _gender, int _age_low, int _age_high, String _action,
                        int _act_low, int _act_high, int _points) {
         this._id = _id;
         this._age_low = _age_low;
@@ -32,11 +33,11 @@ public class ScoreMetric {
         this._action = _action;
     }
 
-    public int get_id() {
+    public long get_id() {
         return _id;
     }
 
-    public void set_id(int _id) {
+    public void set_id(long _id) {
         this._id = _id;
     }
 

@@ -1,14 +1,19 @@
 package us.holypotatoes.ptl_helper;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Years;
+
 public class Member {
-    int _id, _push_ups, _sit_ups, _waist_size, _on_profile;
-    String _name, _run_time, _profile_description, _gender, _profile_date, _last_test_date,
+    int _push_ups, _sit_ups, _waist_size, _on_profile;
+    long _id;
+    double _run_time;
+    String _name, _profile_description, _gender, _profile_date, _last_test_date,
             _next_test_date, _birthday;
 
     public Member(){}
 
-    public Member(int id, String name, String gender, String birthday, String last_test_date,
-                  String next_test_date, int push_ups, int sit_ups, int waist_size, String run_time,
+    public Member(long id, String name, String gender, String birthday, String last_test_date,
+                  String next_test_date, int push_ups, int sit_ups, int waist_size, double run_time,
                   int on_profile, String profile_date, String profile_description) {
         //on a profile with _id
         this._id = id;
@@ -25,8 +30,8 @@ public class Member {
         this._profile_date = profile_date;
         this._profile_description = profile_description;
     }
-    public Member(int id, String name, String gender, String birthday, String last_test_date,
-                  String next_test_date, int push_ups, int sit_ups, int waist_size, String run_time,
+    public Member(long id, String name, String gender, String birthday, String last_test_date,
+                  String next_test_date, int push_ups, int sit_ups, int waist_size, double run_time,
                   int on_profile) {
         //not on a profile with _id
         this._id = id;
@@ -43,7 +48,7 @@ public class Member {
     }
 
     public Member(String name, String gender, String birthday, String last_test_date,
-                  String next_test_date, int push_ups, int sit_ups, int waist_size, String run_time,
+                  String next_test_date, int push_ups, int sit_ups, int waist_size, double run_time,
                   int on_profile, String profile_date, String profile_description) {
         //on a profile without _id
         this._name = name;
@@ -60,7 +65,7 @@ public class Member {
         this._profile_description = profile_description;
     }
     public Member(String name, String gender, String birthday, String last_test_date,
-                  String next_test_date, int push_ups, int sit_ups, int waist_size, String run_time,
+                  String next_test_date, int push_ups, int sit_ups, int waist_size, double run_time,
                   int on_profile) {
         //not on a profile without _id
         this._name = name;
@@ -75,11 +80,11 @@ public class Member {
         this._on_profile = on_profile;
     }
 
-    public int get_id() {
+    public long get_id() {
         return _id;
     }
 
-    public void set_id(int _id) {
+    public void set_id(long _id) {
         this._id = _id;
     }
 
@@ -115,11 +120,11 @@ public class Member {
         this._name = _name;
     }
 
-    public String get_run_time() {
+    public double get_run_time() {
         return _run_time;
     }
 
-    public void set_run_time(String _run_time) {
+    public void set_run_time(double _run_time) {
         this._run_time = _run_time;
     }
 
@@ -177,5 +182,18 @@ public class Member {
 
     public void set_birthday(String _birthday) {
         this._birthday = _birthday;
+    }
+
+    public int get_age() {
+        //"12-31-2014"
+        int _month = Integer.parseInt(this._birthday.split("-")[0]);
+        int _day = Integer.parseInt(this._birthday.split("-")[1]);
+        int _year = Integer.parseInt(this._birthday.split("-")[2]);
+
+        LocalDate birthday = new LocalDate (_year, _month, _day);
+        LocalDate now = new LocalDate();
+        Years age = Years.yearsBetween(birthday, now);
+
+        return age.getYears();
     }
 }

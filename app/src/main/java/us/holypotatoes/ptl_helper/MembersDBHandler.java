@@ -13,16 +13,16 @@ import java.util.List;
 /**
  * Created by ben on 8/18/14.
  */
-public class DBHandler extends SQLiteOpenHelper {
+
+public class MembersDBHandler extends SQLiteOpenHelper {
     //db info
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "pt_database.db";
 
-    private static DBHandler mInstance = null;
+    private static MembersDBHandler mInstance = null;
 
     //tables
     private static final String TABLE_MEMBERS = "members";
-    private static final String TABLE_CHARTS = "charts";
 
     //columns for members
     private static final String MKEY_ID = "id";
@@ -39,63 +39,44 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String MKEY_PROFILE_DATE = "profile_date";
     private static final String MKEY_PROFILE_DESCRIPTION = "profile_description";
 
-    //columns for charts
-    private static final String SKEY_ID = "id";
-    private static final String SKEY_GENDER = "gender";
-    private static final String SKEY_AGE_LOWER_LIMIT = "age_low";
-    private static final String SKEY_AGE_UPPER_LIMIT = "age_high";
-    private static final String SKEY_ACTION= "action";
-    private static final String SKEY_ACTION_LOWER_LIMIT = "act_low";
-    private static final String SKEY_ACTION_UPPER_LIMIT = "act_high";
-    private static final String SKEY_POINTS = "points";
-
-    public static DBHandler getInstance(Context context) {
+    public static MembersDBHandler getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new DBHandler(context.getApplicationContext());
+            mInstance = new MembersDBHandler(context.getApplicationContext());
         }
         return mInstance;
     }
 
-    private DBHandler(Context context) {
+    private MembersDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_MEMBERS_TABLE = "CREATE TABLE " + TABLE_MEMBERS + "(" + MKEY_ID +
-                " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + MKEY_NAME + " TEXT," + MKEY_GENDER + " TEXT," +
+                " INTEGER PRIMARY KEY," + MKEY_NAME + " TEXT," + MKEY_GENDER + " TEXT," +
                 MKEY_BIRTHDAY + " TEXT," + MKEY_LAST_TEST_DATE + " TEXT," + MKEY_NEXT_TEST_DATE +
                 " TEXT," + MKEY_PUSH_UPS + " INTEGER," + MKEY_SIT_UPS + " INTEGER," + MKEY_WAIST_SIZE +
                 " INTEGER," + MKEY_RUN_TIME + " TEXT," + MKEY_ON_PROFILE + " INTEGER," +
                 MKEY_PROFILE_DATE + " TEXT," + MKEY_PROFILE_DESCRIPTION + " TEXT)";
         Log.d("DB CREATE MEMBERS TABLE", CREATE_MEMBERS_TABLE);
 
-        String CREATE_CHARTS_TABLE = "CREATE TABLE " + TABLE_CHARTS + "(" + SKEY_ID +
-                " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," + SKEY_GENDER + " TEXT," +
-                SKEY_AGE_LOWER_LIMIT + " INTEGER," + SKEY_AGE_UPPER_LIMIT + " INTEGER," +
-                SKEY_ACTION + " TEXT," + SKEY_ACTION_LOWER_LIMIT + " INTEGER," +
-                SKEY_ACTION_UPPER_LIMIT + " INTEGER," + SKEY_POINTS + " INTEGER)";
-        Log.d("DB CREATE CHARTS TABLE", CREATE_CHARTS_TABLE);
         db.execSQL(CREATE_MEMBERS_TABLE);
-        db.execSQL(CREATE_CHARTS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older tables if present
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHARTS);
 
         // Create tables again
         onCreate(db);
     }
 
-    //TODO: fix what I've written so far to take advantage of auto increment
-    public void addMember(Member member) {
+    public long addMember(Member member) {
         SQLiteDatabase db = this.getWritableDatabase();
+        long id;
 
         ContentValues values = new ContentValues();
-        values.put(MKEY_ID, member.get_id());
         values.put(MKEY_NAME, member.get_name());
         values.put(MKEY_GENDER, member.get_gender());
         values.put(MKEY_BIRTHDAY, member.get_birthday());
@@ -109,11 +90,12 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(MKEY_PROFILE_DATE, member.get_profile_date());
         values.put(MKEY_PROFILE_DESCRIPTION, member.get_profile_description());
 
-        db.insert(TABLE_MEMBERS, null, values);
+        id = db.insert(TABLE_MEMBERS, null, values);
         db.close();
+        return id;
     }
 
-    public Member getMember(int id) {
+    public Member getMember(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Member member = null;
         Cursor cursor = db.query(TABLE_MEMBERS, null, MKEY_ID + "=?",
@@ -121,11 +103,11 @@ public class DBHandler extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
-            member = new Member(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
-                    cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                    Integer.parseInt(cursor.getString(6)), Integer.parseInt(cursor.getString(7)),
-                    Integer.parseInt(cursor.getString(8)), cursor.getString(9),
-                    Integer.parseInt(cursor.getString(10)), cursor.getString(11), cursor.getString(12));
+            member = new Member(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getString(3),
+                    cursor.getString(4), cursor.getString(5), Integer.parseInt(cursor.getString(6)),
+                    Integer.parseInt(cursor.getString(7)), Integer.parseInt(cursor.getString(8)),
+                    Double.parseDouble(cursor.getString(9)), Integer.parseInt(cursor.getString(10)),
+                    cursor.getString(11), cursor.getString(12));
         }
         return member;
     }
@@ -140,7 +122,7 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Member member = new Member();
-                member.set_id(Integer.parseInt(cursor.getString(0)));
+                member.set_id(Long.parseLong(cursor.getString(0)));
                 member.set_name(cursor.getString(1));
                 member.set_gender(cursor.getString(2));
                 member.set_birthday(cursor.getString(3));
@@ -149,7 +131,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 member.set_push_ups(Integer.parseInt(cursor.getString(6)));
                 member.set_sit_ups(Integer.parseInt(cursor.getString(7)));
                 member.set_waist_size(Integer.parseInt(cursor.getString(8)));
-                member.set_run_time(cursor.getString(9));
+                member.set_run_time(Double.parseDouble(cursor.getString(9)));
                 member.set_on_profile(Integer.parseInt(cursor.getString(10)));
                 member.set_profile_date(cursor.getString(11));
                 member.set_profile_description(cursor.getString(12));
@@ -195,65 +177,6 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    /*
-     *  END MEMBER FUNCTIONS AND BEGIN CHARTS FUNCTIONS
-     */
-    //TODO: add functions to act on the charts table
-    public void addScoreMetric(ScoreMetric metric) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(SKEY_ID, metric.get_id());
-        values.put(SKEY_GENDER, metric.get_gender());
-        values.put(SKEY_AGE_LOWER_LIMIT, metric.get_age_low());
-        values.put(SKEY_AGE_UPPER_LIMIT, metric.get_age_high());
-        values.put(SKEY_ACTION, metric.get_action());
-        values.put(SKEY_ACTION_LOWER_LIMIT, metric.get_act_low());
-        values.put(SKEY_ACTION_UPPER_LIMIT, metric.get_act_high());
-        values.put(SKEY_POINTS, metric.get_points());
-
-        db.insert(TABLE_CHARTS, null, values);
-        db.close();
-    }
-    public int getMetricCount() {
-        String countQuery = "SELECT * FROM " + TABLE_CHARTS;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-
-        return cursor.getCount();
-    }
-
-    public ScoreMetric getScoreMetric(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        ScoreMetric metric = null;
-        Cursor cursor = db.query(TABLE_CHARTS, null, SKEY_ID + "=?", new String[] {String.valueOf(id)},
-                null, null, null, null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-            metric = new ScoreMetric(Integer.parseInt(cursor.getString(0)), cursor.getString(1),
-                    Integer.parseInt(cursor.getString(2)), Integer.parseInt(cursor.getString(3)),
-                    cursor.getString(4), Integer.parseInt(cursor.getString(5)),
-                    Integer.parseInt(cursor.getString(6)),Integer.parseInt(cursor.getString(7)));
-        }
-        return metric;
-    }
-
-    public int updateScoreMetric(ScoreMetric metric) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(SKEY_ID, metric.get_id());
-        values.put(SKEY_GENDER, metric.get_gender());
-        values.put(SKEY_AGE_LOWER_LIMIT, metric.get_age_low());
-        values.put(SKEY_AGE_UPPER_LIMIT, metric.get_age_high());
-        values.put(SKEY_ACTION, metric.get_action());
-        values.put(SKEY_ACTION_LOWER_LIMIT, metric.get_act_low());
-        values.put(SKEY_ACTION_UPPER_LIMIT, metric.get_act_high());
-        values.put(SKEY_POINTS, metric.get_points());
-
-        return db.update(TABLE_CHARTS, values, SKEY_ID + "=?", new String[] {String.valueOf(metric.get_id())});
-    }
 
 
 }

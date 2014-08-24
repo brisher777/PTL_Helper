@@ -24,35 +24,36 @@ public class ChartsTests extends ActivityUnitTestCase<member_display> {
                 member_display.class);
         startActivity(mLaunchIntent, null, null);
         main_activity = getActivity();
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
+        ChartsDBHandler db_handler = ChartsDBHandler.getInstance(main_activity);
     }
 
     public void tearDown() throws Exception {
         super.tearDown();
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
+        ChartsDBHandler db_handler = ChartsDBHandler.getInstance(main_activity);
         SQLiteDatabase db = db_handler.getWritableDatabase();
         db_handler.onUpgrade(db, 1,1);
     }
 
     public void test_charts_database_add_metric() {
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
-        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
-        db_handler.addScoreMetric(metric);
-        assertEquals(db_handler.getMetricCount(), 1);
+        ChartsDBHandler db_handler = ChartsDBHandler.getInstance(main_activity);
+        ScoreMetric metric = new ScoreMetric("Male",30,39,"Sit Ups",50,59,60);
+        metric.set_id(db_handler.addScoreMetric(metric));
+        assertEquals(metric.get_id(), 0);
+        assertEquals(db_handler.getMetricsCount(), 1);
     }
 
     public void test_charts_database_get_metric() {
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
-        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
-        db_handler.addScoreMetric(metric);
+        ChartsDBHandler db_handler = ChartsDBHandler.getInstance(main_activity);
+        ScoreMetric metric = new ScoreMetric("Male",30,39,"Sit Ups",50,59,60);
+        metric.set_id(db_handler.addScoreMetric(metric));
         ScoreMetric new_metric = db_handler.getScoreMetric(metric.get_id());
         assertEquals(metric.get_act_high(), new_metric.get_act_high());
         assertEquals(metric.get_points(), new_metric.get_points());
     }
 
     public void test_charts_database_update_metric() {
-        DBHandler db_handler = DBHandler.getInstance(main_activity);
-        ScoreMetric metric = new ScoreMetric(0,"Male",30,39,"Sit Ups",50,59,60);
+        ChartsDBHandler db_handler = ChartsDBHandler.getInstance(main_activity);
+        ScoreMetric metric = new ScoreMetric("Male",30,39,"Sit Ups",50,59,60);
         db_handler.addScoreMetric(metric);
         assertEquals(metric.get_gender(), "Male");
         metric.set_gender("Female");
