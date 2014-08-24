@@ -120,10 +120,12 @@ public class ChartsDBHandler extends SQLiteOpenHelper {
     //TODO: implement a time delta between now and next test date and figure out where to put it
     public int getPoints(Member member) {
         SQLiteDatabase db = this.getReadableDatabase();
-        /*
+
         String selectQuery = "SELECT " + SKEY_POINTS + " FROM " + TABLE_CHARTS + " WHERE gender=" +
-                member.get_gender() + ", AND " + SKEY_ACTION_LOWER_LIMIT + "<" + member.
-        */
+                member.get_gender() + ", AND " + SKEY_AGE_LOWER_LIMIT + "<" + member.get_age() +
+                " AND " + member.get_age() + "<" + SKEY_AGE_UPPER_LIMIT + " AND action=" + SKEY_ACTION +
+                " AND " + SKEY_ACTION_LOWER_LIMIT + "<" + 
+
 
         //query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
         return 0;
