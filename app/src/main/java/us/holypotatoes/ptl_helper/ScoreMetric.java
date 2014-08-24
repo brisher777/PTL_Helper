@@ -4,14 +4,15 @@ package us.holypotatoes.ptl_helper;
  * Created by ben on 8/22/14.
  */
 public class ScoreMetric {
-    int _age_low, _age_high, _act_low, _act_high, _points;
+    int _age_low, _age_high, _points;
+    double _act_low, _act_high;
     long _id;
     String _gender, _action;
 
     public ScoreMetric(){}
 
-    public ScoreMetric(String _gender, int _age_low, int _age_high, String _action,int _act_low,
-                       int _act_high, int _points) {
+    public ScoreMetric(String _gender, int _age_low, int _age_high, String _action,double _act_low,
+                       double _act_high, int _points) {
         this._age_low = _age_low;
         this._age_high = _age_high;
         this._act_low = _act_low;
@@ -22,7 +23,7 @@ public class ScoreMetric {
     }
 
     public ScoreMetric(long _id, String _gender, int _age_low, int _age_high, String _action,
-                       int _act_low, int _act_high, int _points) {
+                       double _act_low, double _act_high, int _points) {
         this._id = _id;
         this._age_low = _age_low;
         this._age_high = _age_high;
@@ -57,19 +58,19 @@ public class ScoreMetric {
         this._age_high = _age_high;
     }
 
-    public int get_act_low() {
+    public double get_act_low() {
         return _act_low;
     }
 
-    public void set_act_low(int _act_low) {
+    public void set_act_low(double _act_low) {
         this._act_low = _act_low;
     }
 
-    public int get_act_high() {
+    public double get_act_high() {
         return _act_high;
     }
 
-    public void set_act_high(int _act_high) {
+    public void set_act_high(double _act_high) {
         this._act_high = _act_high;
     }
 

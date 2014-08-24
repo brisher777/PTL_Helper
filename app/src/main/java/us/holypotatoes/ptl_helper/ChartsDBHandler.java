@@ -116,18 +116,25 @@ public class ChartsDBHandler extends SQLiteOpenHelper {
 
         return db.update(TABLE_CHARTS, values, SKEY_ID + "=?", new String[] {String.valueOf(metric.get_id())});
     }
-    //TODO: finish out get points
+
     //TODO: implement a time delta between now and next test date and figure out where to put it
-    public int getPoints(Member member) {
+    public int get_points(Member member, String action) {
         SQLiteDatabase db = this.getReadableDatabase();
+        int points = -1;
 
-        String selectQuery = "SELECT " + SKEY_POINTS + " FROM " + TABLE_CHARTS + " WHERE gender=" +
-                member.get_gender() + ", AND " + SKEY_AGE_LOWER_LIMIT + "<" + member.get_age() +
-                " AND " + member.get_age() + "<" + SKEY_AGE_UPPER_LIMIT + " AND action=" + SKEY_ACTION +
-                " AND " + SKEY_ACTION_LOWER_LIMIT + "<" + 
+        String selectQuery = "SELECT " + SKEY_POINTS + " FROM " + TABLE_CHARTS + " WHERE gender='" +
+                member.get_gender() + "' AND " + SKEY_AGE_LOWER_LIMIT + "<" + member.get_age() +
+                " AND " + member.get_age() + "<" + SKEY_AGE_UPPER_LIMIT + " AND action='" + action +
+                "' AND " + SKEY_ACTION_LOWER_LIMIT + "<" + member.get_run_time() + " AND " +
+                member.get_run_time() + "<" + SKEY_ACTION_UPPER_LIMIT;
 
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
-        //query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy, String limit)
-        return 0;
+        if (cursor.moveToFirst()) {
+            points = cursor.getInt(0); //this may be wrong
+            cursor.close();
+            db.close();
+        }
+        return points;
     }
 }

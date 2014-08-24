@@ -63,6 +63,14 @@ public class ChartsTests extends ActivityUnitTestCase<member_display> {
         assertEquals(new_metric.get_gender(), "Female");
     }
 
+    public void test_charts_database_get_points() {
+        ChartsDBHandler db_handler = ChartsDBHandler.getInstance(main_activity);
+        ScoreMetric metric = new ScoreMetric("Male",30,39,"run",0.01,9.40,60);
+        db_handler.addScoreMetric(metric);
+        Member ben = new Member("Ben", "Male", "09-17-1982", "06-31-2014", "12-31-2014",
+                60, 58, 28, 9.3, 0, "", "");
+        assertEquals(db_handler.get_points(ben, "run"), 60);
+    }
 
 }
 

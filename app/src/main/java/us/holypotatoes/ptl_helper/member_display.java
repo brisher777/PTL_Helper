@@ -18,7 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
+/**
+ * TODO's
+ * function -> get next test date based on current test date and score
+ * function -> get composite score
+ * Member.class -> add email field
+ * ScoreChart.class -> add minimum field (bool)
+ * find or create spreadsheet of charts
+ * add a way to track how many pt tests someone has taken while on profile, also need to track which aspect of the test they're exempt from
+ *
+ */
 public class member_display extends Activity {
 
     /**
