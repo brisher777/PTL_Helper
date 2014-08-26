@@ -26,7 +26,7 @@ import android.widget.TextView;
  * ScoreChart.class -> add minimum field (bool)
  * find or create spreadsheet of charts
  * add a way to track how many pt tests someone has taken while on profile, also need to track which aspect of the test they're exempt from
- *
+ * implement a time delta between now and next test date and figure out where to put it
  */
 public class member_display extends Activity {
 
