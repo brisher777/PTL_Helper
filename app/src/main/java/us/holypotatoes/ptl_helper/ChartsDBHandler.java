@@ -3,6 +3,8 @@ package us.holypotatoes.ptl_helper;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.HashMap;
@@ -23,10 +25,11 @@ public class ChartsDBHandler extends SQLiteAssetHelper {
     private static final String SKEY_GENDER = "gender";
     private static final String SKEY_AGE_LOWER_LIMIT = "age_low";
     private static final String SKEY_AGE_UPPER_LIMIT = "age_high";
-    private static final String SKEY_ACTION= "action";
+    private static final String SKEY_ACTION = "action";
     private static final String SKEY_ACTION_LOWER_LIMIT = "act_low";
     private static final String SKEY_ACTION_UPPER_LIMIT = "act_high";
     private static final String SKEY_POINTS = "points";
+    private static final String SKEY_MINIMUM = "minimum";
 
     public ChartsDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,9 +49,9 @@ public class ChartsDBHandler extends SQLiteAssetHelper {
         else
             action_val = String.valueOf(member.get_waist_size());
 
-        String selectQuery = "SELECT " + SKEY_POINTS + " FROM " + TABLE_CHARTS + " WHERE gender='" +
+        String selectQuery = "SELECT " + SKEY_POINTS + " FROM " + TABLE_CHARTS + " WHERE " + SKEY_GENDER + "='" +
                 member.get_gender() + "' AND " + SKEY_AGE_LOWER_LIMIT + "<" + member.get_age() +
-                " AND " + member.get_age() + "<" + SKEY_AGE_UPPER_LIMIT + " AND action='" + action +
+                " AND " + member.get_age() + "<" + SKEY_AGE_UPPER_LIMIT + " AND " + SKEY_ACTION + "='" + action +
                 "' AND " + SKEY_ACTION_LOWER_LIMIT + "<" + action_val + " AND " +
                 action_val + "<" + SKEY_ACTION_UPPER_LIMIT;
 
@@ -64,9 +67,25 @@ public class ChartsDBHandler extends SQLiteAssetHelper {
 
     public HashMap get_minimums(Member member) {
         SQLiteDatabase db = getReadableDatabase();
-        HashMap dict = new HashMap();
-        //query db
-        //return all minimums for the members age bracket
+        HashMap<String,Double> dict = new HashMap<String, Double>();
+        String selectQuery = "SELECT " + SKEY_ACTION + "," + SKEY_ACTION_LOWER_LIMIT + "," +
+                SKEY_ACTION_UPPER_LIMIT + " FROM " + TABLE_CHARTS + " WHERE (" +
+                SKEY_GENDER + "='" + String.valueOf(member.get_gender()) + "' AND " +
+                SKEY_AGE_LOWER_LIMIT + "<" + member.get_age() + " AND " +
+                member.get_age() + "<" + SKEY_AGE_UPPER_LIMIT + " AND " +
+                SKEY_MINIMUM + "=" + "1)";
 
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d("minimum", selectQuery);
+        if (cursor.moveToFirst()) {
+            do {
+                Log.d("minimum", "Action: " + String.valueOf(cursor.getString(0)) + " : Low: "
+                        + String.valueOf(cursor.getString(1)) + " : High: " + String.valueOf(cursor.getString(2)));
+                dict.put(String.valueOf(cursor.getString(0)), cursor.getDouble(2));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return dict;
     }
 }
