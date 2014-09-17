@@ -24,7 +24,7 @@ import android.widget.TextView;
  * function -> get composite score
  * Member.class -> add email field
  * ScoreChart.class -> add minimum field (bool)
- * find or create spreadsheet of charts
+ * DONE -- find or create spreadsheet of charts
  * add a way to track how many pt tests someone has taken while on profile, also need to track which aspect of the test they're exempt from
  * implement a time delta between now and next test date and figure out where to put it
  */
